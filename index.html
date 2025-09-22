@@ -1,21 +1,79 @@
 <!doctype html>
-<html lang="es"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="wtaype - Plataforma de beneficios exclusivos. Únete y disfruta descuentos únicos.">
-<meta name="keywords" content="beneficios, descuentos, ofertas, recompensas">
-<link href="/tusfloresamor/vite.svg" rel="icon" type="image/x-icon">
-<title>Smiles - One dash</title>
-
-  <script type="module" crossorigin src="/tusfloresamor/assets/main-C3Vw65TC.js"></script>
-  <link rel="modulepreload" crossorigin href="/tusfloresamor/assets/widev-DFzUqLNd.js">
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f8cd04">
+  <title>Flores Amarillas - 21 de Septiembre</title>
+  <meta name="description" content="wtaype - Plataforma de beneficios exclusivos. Únete y disfruta descuentos únicos.">
+  <meta name="keywords" content="beneficios, descuentos, ofertas, recompensas">
+  <link rel="icon" href="/tusfloresamor/vite.svg" />
+  <script type="module" crossorigin src="/tusfloresamor/assets/main-533lMity.js"></script>
+  <link rel="modulepreload" crossorigin href="/tusfloresamor/assets/widev-Bs9_iaMm.js">
   <link rel="stylesheet" crossorigin href="/tusfloresamor/assets/widev-zmo6Pd-i.css">
-  <link rel="stylesheet" crossorigin href="/tusfloresamor/assets/main-D7CHo0iJ.css">
+  <link rel="stylesheet" crossorigin href="/tusfloresamor/assets/main-Cxsm1WZE.css">
 </head>
 <body>
-<h1>Hola mundo como estas grrr</h1>
+  <div class="container">
+    <!-- Flores flotantes animadas -->
+    <div class="floating-flowers">
+      <i class="fas fa-seedling flower" style="--delay: 0s"></i>
+      <i class="fas fa-leaf flower" style="--delay: 0.5s"></i>
+      <i class="fab fa-pagelines flower" style="--delay: 1s"></i>
+      <i class="fas fa-seedling flower" style="--delay: 1.5s"></i>
+      <i class="fas fa-leaf flower" style="--delay: 2s"></i>
+    </div>
 
-<button>Consultar respuesta genial</button>
+    <!-- Contenido principal -->
+    <div class="card">
+      <div class="header">
+        <div class="date">21 de Septiembre</div>
+        <h1>🌻 Flores Amarillas 🌻</h1>
+        <div class="subtitle">Día de la Primavera y la Juventud</div>
+      </div>
 
+      <div class="flower-animation">
+        <div class="sunflower">
+          <div class="center"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+          <div class="petal"></div>
+        </div>
+      </div>
+
+      <div class="message">
+        <p class="main-text">
+          Hola <span class="para highlight">Amor</span> ✨
+        </p>
+        <p class="love-text">
+          En este día especial, quiero que sepas que eres la luz que ilumina mi vida como el amarillo de estas flores.
+        </p>
+        <div class="signature">
+          Con todo mi amor,<br>
+          <span class="de signature-name">Tu admirador secreto</span> 💛
+        </div>
+      </div>
+
+      <button class="heart-btn" onclick="createHearts()">
+        <i class="fas fa-heart"></i> Abre Mi Corazón
+      </button>
+    </div>
+
+    <!-- Música de fondo -->
+    <div class="music-control">
+      <button onclick="toggleMusic()">
+        <i class="fas fa-music"></i>
+      </button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://raw.githubusercontent.com/geluksee/nice/main/FloresAmarillas.mp3" type="audio/mpeg">
+  </audio>
 </body>
 </html>
