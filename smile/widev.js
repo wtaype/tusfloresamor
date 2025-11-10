@@ -1,20 +1,71 @@
 import $ from 'jquery'; 
-
+import { doc, setDoc, getDoc, serverTimestamp, Timestamp} from 'firebase/firestore';
 
 // ==============================
-// FUNCIONES DE TEMAS CON jQuery
+// 🔥 FECHA CON HORA ACTUAL PARA FIRESTORE
 // ==============================
-// $('<div class="witemas"></div>').appendTo('body');
+export const savebd = (fecha) => {
+  const [año, mes, dia] = fecha.split('-').map(Number);
+  const ahora = new Date();
+  const fechaObj = new Date(año, mes - 1, dia, ahora.getHours(), ahora.getMinutes(), ahora.getSeconds());
+  return Timestamp.fromDate(fechaObj);
+};
+
+export const getbd = (timestamp) => {
+  if (!timestamp?.toDate) return '';
+  const d = timestamp.toDate();
+  return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+};
+ 
 
 export const wiTema = (() => {
- const tms = [["Cielo","#0EBEFF"],["Dulce","#FF5C69"],["Paz","#29C72E"],["Mora","#7000FF"],["Futuro","#21273B"]], 
- set = el => {const [nm,co] = $(el).data('tema').split('|'); $('html').attr('data-theme',nm); 
- $('meta[name="theme-color"]').length ? $('meta[name="theme-color"]').attr('content',co) : $('<meta>',{name:'theme-color',content:co}).appendTo('head');
- savels('witema',`${nm}|${co}`,720); $('.mtha').removeClass('mtha'); $(el).addClass('mtha');},
- init = () => {$('.witemas').html(tms.map(([n,c]) => `<div class="tema" data-tema="${n}|${c}" style="background:${c}"></div>`).join('')); const sav = getls('witema'), ini = $(`[data-tema="${sav}"]`)[0] || $('.mtha')[0] || $('[data-tema]').first()[0]; ini && set(ini); $(document).off('click.witema').on('click.witema', '[data-tema]', e => set(e.currentTarget));};
- $('.witemas').length ? init() : new MutationObserver(m => m.some(({addedNodes}) => [...addedNodes].some(n => n.querySelector?.('.witemas'))) && (init(), true)).observe(document.body, {childList: true, subtree: true});
- return {set};
+  const tonos = [["Cielo","#0EBEFF"],["Dulce","#FF5C69"],["Paz","#29C72E"],["Mora","#7000FF"],["Futuro","#21273B"]];
+  let espera, temaSel;
+
+  const aplica = el => {
+    const dato = $(el).data('tema');
+    if (!dato) return false;
+    const [nomb, color] = dato.split('|');
+    if (!nomb || !color) return false;
+    $('html').attr('data-theme', nomb);
+    const meta = $('meta[name="theme-color"]');
+    meta.length ? meta.attr('content', color) : $('<meta>', { name: 'theme-color', content: color }).appendTo('head');
+    savels('wiTema', dato, 720);
+    $('.mtha').removeClass('mtha');
+    $(el).addClass('mtha');
+    temaSel = dato;
+    return true;
+  };
+
+  const guarda = async (db, usr) => {
+    if (!db || !usr?.displayName || !temaSel) return;
+    try {
+      await setDoc(doc(db, 'preferencias', usr.displayName), {
+        usuario: usr.displayName,
+        email: usr.email,
+        wiTema: temaSel,
+        fechaActualizacion: serverTimestamp()
+      }, { merge: true });
+      const [nomb] = temaSel.split('|');
+      Mensaje(`Tema ${nomb} guardado 🎨`);
+    } catch (err) {
+      console.error('❌ Error guardando tema:', err);
+    }
+  };
+
+  return (db, usr) => {
+    $('.witemas').html(tonos.map(([nomb, color]) => `<div class="tema" data-tema="${nomb}|${color}" style="background:${color}"></div>`).join(''));
+    const guardado = getls('wiTema');
+    const inicio = $(`[data-tema="${guardado}"]`)[0] || $('.mtha')[0] || $('[data-tema]').first()[0];
+    inicio && aplica(inicio);
+    $(document).off('click.witema').on('click.witema', '[data-tema]', e => {
+      if (!aplica(e.currentTarget) || !db || !usr?.displayName) return;
+      clearTimeout(espera);
+      espera = setTimeout(() => guarda(db, usr), 50); //Para guardar el tema segundos
+    });
+  };
 })();
+
 
 // ==============================
 // SISTEMA DE ACTUALIZACION DE CLASES
@@ -27,21 +78,20 @@ export function adtm(se,cl,ti,tf){
   $(se).text(ti).addClass(cl).delay(1800).queue(q=>$(se).text(tf).removeClass(cl).dequeue())
 } 
 
-export const infoo = (() => {
-  const f = () => {const d=new Date(); $('.wty').text(d.getFullYear()); $('.wtu').text(d.toLocaleString()); $(document).off('click.infoo','.abw,.abwok').on('click.infoo','.abw,.abwok',function(){const id=this.id||''; if(navigator.clipboard&&id) navigator.clipboard.writeText(id).catch(()=>{}); $('.abwc').toggleClass('dpn');});};
-  $('.wty,.wtu,.abw,.abwok').length ? f() : new MutationObserver(m => m.some(({addedNodes}) => [...addedNodes].some(n => n.querySelector?.('.wty,.wtu,.abw,.abwok'))) && (f(), true)).observe(document.body, {childList: true, subtree: true});
-  return f;
-})();
-
-
 export const adup = (x, y) => {
   $(x).addClass('updating').text(y);
   setTimeout(() => $(x).removeClass('updating'), 500);
 };
 
+export const mis10 = (texto) => {
+  if (texto.length <= 10) {
+    return texto;
+  }
+  return texto.substring(0, 10) + '...';
+};
 
 export const showLoading = (show) => {
-  $('#loading-style').length || $('head').append('<style id="loading-style">.loading{height:1vh;background:linear-gradient(to right,#fdd835,#43a047,#fdd835);background-size:200% 100%;animation:l 1.5s infinite;border-radius:3px;width:100%;position:fixed;top:0;left:0;z-index:9999}@keyframes l{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}</style>');
+  $('#loading-style').length || $('head').append('<style id="loading-style">.loading{height:1vh;background:linear-gradient(to right,#ffd105,#1e3a8a,#ffd105);background-size:200% 100%;animation:l 1.5s infinite;border-radius:3px;width:100%;position:fixed;top:0;left:0;z-index:9999}@keyframes l{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}</style>');
   $('.loading').length || $('body').append('<div class="loading" style="display:none"></div>');
   $('.loading').toggle(!!show);
 };
@@ -59,10 +109,6 @@ export const Saludar = () => {
     }
 }; 
 
-// AccederRol
-// export const accederRol = (rol) => {
-//   window.location.href = { smiletop: '/smiletop.html' }[rol] || '/smile.html';
-// };
 
 export const accederRol = (rol) => {
   const to = rol === 'smiletop' ? 'smiletop.html' : 'smile.html';
@@ -196,36 +242,6 @@ export function getls(clave) {
   } catch(e){console.error('Error getls:', e); removels(clave); return null;}
 }
 
-
-// ✅ GUARDAR OBJECTS 
-// const userData = {
-//   nombre: 'Wilder',
-//   rol: 'smile',
-// };
-// savels('userData', userData, 120);
-
-// // 🔍 Consultar objeto (súper fácil)
-// const user = getls('userData');
-// if (user) {
-//   console.log(user.nombre);              // "Wilder"
-//   console.log(user.rol);                 // "smiletop"
-// }
-// 🎯 Usar en tu app directamente
-// $('#welcome').text(`Hola ${user.nombre}!`);
-// $('#email').text(user.email);
-
-// ✅ GUARDAR ARRAYS 
-// const acciones = ['login', 'updateProfile', 'logout'];
-// savels('userActions', acciones, 45);
-
-// // 🔍 Consultar array simple
-// const actions = getls('userActions');
-// if (actions) {
-//   console.log(actions[0]);             // "login"
-//   console.log(actions.includes('logout')); // true
-//   console.log(actions.join(', '));     // "login, updateProfile, logout"
-// }
-// Remove a key from localStorage
 export function removels(...claves) {
   claves.forEach(clave => {
     if (clave && typeof clave === 'string') {
@@ -325,7 +341,7 @@ export function witip(el, texto, pos = 'top', tiempo = 1800) {
   const $tip = $('<div>', {
     class: `witip ${posicion} ${tipo || ''}`,
     'data-for': elId,
-    text: texto,
+    html: texto,
     css: { 'border-color': tipo ? `var(${tipoColor[tipo]})` : 'var(--mco)' }
   });
   

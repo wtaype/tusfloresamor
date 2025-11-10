@@ -157,8 +157,8 @@ $(function(){
 
 
   // Navegación entre modales
-  $('.login').click(() => OpenAuthM('loginModal'));
-  $('.registrar').click(() => OpenAuthM('registroModal'));
+  $(document).on('click', '.login', () => OpenAuthM('loginModal'));
+  $(document).on('click', '.registrar', () => OpenAuthM('registroModal'));
   $('.crearCuenta').click(()=> {OpenAuthM('registroModal');CloseAuthM('loginModal')});
   $('.conCuenta').click(()=> {OpenAuthM('loginModal');CloseAuthM('registroModal')});
   $('.olvidastePass').click(()=> {OpenAuthM('recuperarModal');CloseAuthM('loginModal')});
@@ -263,7 +263,7 @@ $('#Registrar').click(async function(){
     Mensaje('Registro completado! ✅');
 
   }catch(e){Mensaje({'auth/email-already-in-use': 'Email ya registrado', 'auth/weak-password': 'Contraseña muy débil'}[e.code] || e.message) || console.error(e);}
-  finally{savels(wiAuthIn,'wIn',24); savels(wiAuthRol,rol,24); setTimeout(()=> (accederRol(rol)), wiAuthTm);}
+  finally{savels(wiAuthIn,'wIn',24); savels(wiAuthRol,rol,24);}
 });
 
 // LOGIN CENTER APP 
@@ -281,7 +281,7 @@ $('#Login').click(async function() {
     } // Convertir usuario a email si es necesario
 
     await signInWithEmailAndPassword(auth, email, password); // Iniciando
-    savels(wiAuthIn,'wIn',24); savels(wiAuthRol, busq.data().rol, 24); accederRol(busq.data().rol);  //Actualizando seguridad
+    savels(wiAuthIn,'wIn',24); savels(wiAuthRol, busq.data().rol, 24); CloseAuthM('loginModal');
   }catch(e){
     const errores = {
       'auth/invalid-credential': 'Contraseña incorrecta',
