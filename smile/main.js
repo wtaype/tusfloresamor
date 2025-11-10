@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import './wiAuth.js';
+import './wiauth.js';
 import { footer } from './foo.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { auth, db } from '../firebase/init.js';
