@@ -8,12 +8,14 @@ export { footer };
 let lanzamiento = 2024;
 let autor = '@wilder.taype';
 let link = 'https://wtaype.github.io/';
-let version = 'v12'; 
-/** ACTUALIZACION TAG[START]  
-git tag v12 -m "Version v12" ; git push origin v12
+let version = 'v14'; 
+/** ACTUALIZACION TAG version dia hora [START]  
 
-git add . ; git commit -m "Actualizacion Principal v12.9.21"
+git add . ; git commit -m "Actualizacion Principal v14.9.21"
 git push origin main
+
+// Actualizar despues de main- 
+git tag v13 -m "Version v13" ; git push origin v13
 
  ACTUALIZACION TAG[END] */ 
 
